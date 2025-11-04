@@ -1,7 +1,13 @@
 import express, { Application } from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import { errorHandler, notFound } from './middlewares/error.middleware'
 import { rateLimit } from 'express-rate-limit'
+import authRoutes from './routes/auth.routes'
+import servicesRoutes from './routes/services.routes'
+import reviewsRoutes from './routes/reviews.routes'
+import citiesRoutes from './routes/cities.routes'
+import categoriesRoutes from './routes/categories.routes'
 
 /**
  * Create Express application
@@ -24,6 +30,9 @@ export function createApp(): Application {
   // Body parser
   app.use(express.json({ limit: '10mb' }))
   app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+
+  // Cookie parser
+  app.use(cookieParser())
 
   // Rate limiting
   const limiter = rateLimit({
@@ -67,13 +76,12 @@ export function createApp(): Application {
     })
   })
 
-  // TODO: Import and use route handlers
-  // app.use('/api/v1/auth', authRoutes)
-  // app.use('/api/v1/users', userRoutes)
-  // app.use('/api/v1/services', serviceRoutes)
-  // app.use('/api/v1/reviews', reviewRoutes)
-  // app.use('/api/v1/cities', cityRoutes)
-  // app.use('/api/v1/categories', categoryRoutes)
+  // API Routes
+  app.use('/api/v1/auth', authRoutes)
+  app.use('/api/v1/services', servicesRoutes)
+  app.use('/api/v1', reviewsRoutes)
+  app.use('/api/v1/cities', citiesRoutes)
+  app.use('/api/v1/categories', categoriesRoutes)
 
   // ============================================
   // Error Handling
