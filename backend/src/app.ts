@@ -8,6 +8,7 @@ import servicesRoutes from './routes/services.routes'
 import reviewsRoutes from './routes/reviews.routes'
 import citiesRoutes from './routes/cities.routes'
 import categoriesRoutes from './routes/categories.routes'
+import businessRoutes from './routes/business.routes'
 
 /**
  * Create Express application
@@ -72,6 +73,7 @@ export function createApp(): Application {
         reviews: '/api/v1/reviews',
         cities: '/api/v1/cities',
         categories: '/api/v1/categories',
+        business: '/api/v1/business',
       },
     })
   })
@@ -82,6 +84,7 @@ export function createApp(): Application {
   app.use('/api/v1', reviewsRoutes)
   app.use('/api/v1/cities', citiesRoutes)
   app.use('/api/v1/categories', categoriesRoutes)
+  app.use('/api/v1/business', businessRoutes)
 
   // ============================================
   // Error Handling
