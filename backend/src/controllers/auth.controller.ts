@@ -13,7 +13,7 @@ const registerSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   phone: z.string().optional(),
-  role: z.enum(['user', 'business']).optional(),
+  role: z.enum(['user', 'business', 'admin']).optional(),
 })
 
 const loginSchema = z.object({

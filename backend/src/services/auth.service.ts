@@ -13,7 +13,7 @@ export interface RegisterData {
   firstName?: string
   lastName?: string
   phone?: string
-  role?: 'user' | 'business'
+  role?: 'user' | 'business' | 'admin'
 }
 
 export interface LoginData {
