@@ -8,7 +8,7 @@ const router = Router()
  * GET /api/v1/cities
  * Get all cities
  */
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     // Check cache
     const cacheKey = 'cities:all'

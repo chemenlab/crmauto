@@ -66,7 +66,7 @@ export const authenticate = async (
  * Check if user has required role
  */
 export const authorize = (...roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.user) {
       throw new ApiError(401, 'Unauthorized', 'UNAUTHORIZED')
     }

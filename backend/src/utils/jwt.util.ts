@@ -19,6 +19,7 @@ export function generateAccessToken(payload: TokenPayload): string {
     throw new Error('JWT_SECRET not configured')
   }
 
+  // @ts-ignore - TypeScript has issues with jsonwebtoken types
   return jwt.sign(payload, secret, {
     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
   })
@@ -33,6 +34,7 @@ export function generateRefreshToken(payload: TokenPayload): string {
     throw new Error('JWT_REFRESH_SECRET not configured')
   }
 
+  // @ts-ignore - TypeScript has issues with jsonwebtoken types
   return jwt.sign(payload, secret, {
     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
   })

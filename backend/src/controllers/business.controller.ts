@@ -14,7 +14,7 @@ const updateServiceSchema = z.object({
   phone: z.string().regex(/^\+7\d{10}$/).optional(),
   email: z.string().email().optional(),
   website: z.string().url().optional(),
-  workingHours: z.record(z.string()).optional(),
+  workingHours: z.record(z.string(), z.string()).optional(),
 })
 
 const getReviewsQuerySchema = z.object({

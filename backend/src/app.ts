@@ -56,7 +56,7 @@ export function createApp(): Application {
   // Health check
   // ============================================
 
-  app.get('/health', (req, res) => {
+  app.get('/health', (_req, res) => {
     res.json({
       success: true,
       message: 'AutoHub API is running',
@@ -68,7 +68,7 @@ export function createApp(): Application {
   // API Routes
   // ============================================
 
-  app.get('/api/v1', (req, res) => {
+  app.get('/api/v1', (_req, res) => {
     res.json({
       success: true,
       message: 'AutoHub API v1',

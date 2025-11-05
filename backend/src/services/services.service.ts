@@ -42,7 +42,7 @@ export async function getServices(params: GetServicesParams) {
     city,
     category,
     rating,
-    openNow,
+    // openNow,
     search,
     page = 1,
     limit = 20,

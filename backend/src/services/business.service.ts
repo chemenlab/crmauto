@@ -23,7 +23,7 @@ export interface BusinessStats {
 export async function getBusinessStats(userId: string): Promise<BusinessStats> {
   // Find service owned by this user
   const service = await prisma.service.findFirst({
-    where: { ownerId: userId },
+    where: { userId: userId },
     include: {
       reviews: {
         select: {
@@ -38,15 +38,11 @@ export async function getBusinessStats(userId: string): Promise<BusinessStats> {
     throw new ApiError(404, 'Service not found', 'SERVICE_NOT_FOUND')
   }
 
-  // Calculate stats
-  const now = new Date()
-  const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-
   // Get all-time stats
   const totalViews = service.viewsCount
   const totalPhoneClicks = service.phoneClicksCount
   const totalReviews = service.reviewsCount
-  const averageRating = service.rating
+  const averageRating = Number(service.rating)
 
   // Reviews by status
   const pendingReviews = service.reviews.filter((r) => r.status === 'pending').length
@@ -90,7 +86,7 @@ export async function getBusinessStats(userId: string): Promise<BusinessStats> {
  */
 export async function getBusinessService(userId: string) {
   const service = await prisma.service.findFirst({
-    where: { ownerId: userId },
+    where: { userId: userId },
     include: {
       city: true,
       prices: {
@@ -99,7 +95,7 @@ export async function getBusinessService(userId: string) {
         },
       },
       photos: {
-        orderBy: { order: 'asc' },
+        orderBy: { orderIndex: 'asc' },
       },
     },
   })
@@ -128,7 +124,7 @@ export async function updateBusinessService(
 ) {
   // Find service
   const service = await prisma.service.findFirst({
-    where: { ownerId: userId },
+    where: { userId: userId },
   })
 
   if (!service) {
@@ -175,7 +171,7 @@ export async function getBusinessReviews(
 
   // Find service
   const service = await prisma.service.findFirst({
-    where: { ownerId: userId },
+    where: { userId: userId },
   })
 
   if (!service) {
@@ -200,9 +196,7 @@ export async function getBusinessReviews(
             lastName: true,
           },
         },
-        photos: {
-          orderBy: { order: 'asc' },
-        },
+        photos: true,
       },
       orderBy: { createdAt: 'desc' },
       skip: (page - 1) * limit,

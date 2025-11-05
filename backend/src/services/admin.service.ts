@@ -131,7 +131,7 @@ export async function getAllServices(params?: {
     prisma.service.findMany({
       where,
       include: {
-        owner: {
+        user: {
           select: {
             id: true,
             email: true,
@@ -306,7 +306,7 @@ export async function deleteUser(userId: string) {
 export async function togglePremium(serviceId: string, isPremium: boolean) {
   const service = await prisma.service.update({
     where: { id: serviceId },
-    data: { isPremium },
+    data: { plan: isPremium ? 'premium' : 'free' },
   })
 
   return service

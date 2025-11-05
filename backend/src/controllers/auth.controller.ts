@@ -21,10 +21,6 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
-const refreshSchema = z.object({
-  refreshToken: z.string().min(1, 'Refresh token is required'),
-})
-
 /**
  * Register new user
  * POST /api/v1/auth/register
@@ -127,7 +123,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction): 
  * Logout user
  * POST /api/v1/auth/logout
  */
-export async function logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function logout(_req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     // Clear refresh token cookie
     res.clearCookie('refreshToken')

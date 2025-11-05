@@ -8,7 +8,7 @@ const router = Router()
  * GET /api/v1/categories
  * Get all service categories
  */
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     // Check cache
     const cacheKey = 'categories:all'

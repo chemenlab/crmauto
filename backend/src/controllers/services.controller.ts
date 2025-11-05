@@ -28,7 +28,7 @@ const createServiceSchema = z.object({
   phone: z.string().regex(/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/),
   email: z.string().email().optional(),
   website: z.string().url().optional(),
-  workingHours: z.record(z.string()),
+  workingHours: z.record(z.string(), z.string()),
 })
 
 const updateServiceSchema = createServiceSchema.partial()
