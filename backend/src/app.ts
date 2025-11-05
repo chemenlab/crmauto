@@ -1,6 +1,7 @@
 import express, { Application } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import path from 'path'
 import { errorHandler, notFound } from './middlewares/error.middleware'
 import { rateLimit } from 'express-rate-limit'
 import authRoutes from './routes/auth.routes'
@@ -9,6 +10,9 @@ import reviewsRoutes from './routes/reviews.routes'
 import citiesRoutes from './routes/cities.routes'
 import categoriesRoutes from './routes/categories.routes'
 import businessRoutes from './routes/business.routes'
+import adminRoutes from './routes/admin.routes'
+import favoritesRoutes from './routes/favorites.routes'
+import uploadRoutes from './routes/upload.routes'
 
 /**
  * Create Express application
@@ -34,6 +38,9 @@ export function createApp(): Application {
 
   // Cookie parser
   app.use(cookieParser())
+
+  // Static files - serve uploaded images
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')))
 
   // Rate limiting
   const limiter = rateLimit({
@@ -74,6 +81,9 @@ export function createApp(): Application {
         cities: '/api/v1/cities',
         categories: '/api/v1/categories',
         business: '/api/v1/business',
+        admin: '/api/v1/admin',
+        favorites: '/api/v1/favorites',
+        upload: '/api/v1/upload',
       },
     })
   })
@@ -85,6 +95,9 @@ export function createApp(): Application {
   app.use('/api/v1/cities', citiesRoutes)
   app.use('/api/v1/categories', categoriesRoutes)
   app.use('/api/v1/business', businessRoutes)
+  app.use('/api/v1/admin', adminRoutes)
+  app.use('/api/v1/favorites', favoritesRoutes)
+  app.use('/api/v1/upload', uploadRoutes)
 
   // ============================================
   // Error Handling
