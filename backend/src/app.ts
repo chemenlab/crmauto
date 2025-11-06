@@ -5,6 +5,7 @@ import path from 'path'
 import { errorHandler, notFound } from './middlewares/error.middleware'
 import { rateLimit } from 'express-rate-limit'
 import authRoutes from './routes/auth.routes'
+import userRoutes from './routes/user.routes'
 import servicesRoutes from './routes/services.routes'
 import reviewsRoutes from './routes/reviews.routes'
 import citiesRoutes from './routes/cities.routes'
@@ -19,6 +20,9 @@ import uploadRoutes from './routes/upload.routes'
  */
 export function createApp(): Application {
   const app = express()
+
+  // Trust proxy for Nginx
+  app.set('trust proxy', true)
 
   // ============================================
   // Middleware
@@ -90,6 +94,7 @@ export function createApp(): Application {
 
   // API Routes
   app.use('/api/v1/auth', authRoutes)
+  app.use('/api/v1/users', userRoutes)
   app.use('/api/v1/services', servicesRoutes)
   app.use('/api/v1', reviewsRoutes)
   app.use('/api/v1/cities', citiesRoutes)
