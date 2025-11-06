@@ -2,8 +2,23 @@
 
 import { useEffect, useState } from 'react'
 import { getAdminStats } from '@/lib/api/admin'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 import type { AdminStats } from '@/lib/api/admin'
+import {
+  Users,
+  Building2,
+  Wrench,
+  MessageSquare,
+  Clock,
+  TrendingUp,
+  BarChart3,
+  FileText,
+  MapPin,
+  Tags,
+  AlertCircle
+} from 'lucide-react'
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<AdminStats | null>(null)
@@ -28,8 +43,11 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-600">Загрузка статистики...</p>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-sm text-muted-foreground">Загрузка статистики...</p>
+        </div>
       </div>
     )
   }
@@ -37,185 +55,218 @@ export default function AdminDashboardPage() {
   if (!stats) {
     return (
       <Card>
-        <CardContent className="p-12 text-center">
-          <p className="text-gray-600">Не удалось загрузить статистику</p>
+        <CardContent className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+          <AlertCircle className="h-12 w-12 text-muted-foreground" />
+          <p className="text-muted-foreground">Не удалось загрузить статистику</p>
+          <Button onClick={loadStats} variant="outline">Попробовать снова</Button>
         </CardContent>
       </Card>
     )
   }
 
+  const statCards = [
+    {
+      title: 'Всего пользователей',
+      value: stats.totalUsers,
+      change: `+${stats.newUsersThisMonth} за месяц`,
+      icon: Users,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+    },
+    {
+      title: 'Бизнес-аккаунтов',
+      value: stats.totalBusinesses,
+      change: 'Активных владельцев',
+      icon: Building2,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+    },
+    {
+      title: 'Автосервисов',
+      value: stats.totalServices,
+      change: `+${stats.newServicesThisMonth} за месяц`,
+      icon: Wrench,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+    },
+    {
+      title: 'Отзывов',
+      value: stats.totalReviews,
+      change: 'Всего отзывов',
+      icon: MessageSquare,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+    },
+  ]
+
+  const moderationCards = [
+    {
+      title: 'Автосервисы на модерации',
+      description: 'Требуют проверки и одобрения',
+      value: stats.pendingServices,
+      href: '/admin/services?status=pending',
+      icon: Clock,
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-50',
+      borderColor: 'border-yellow-200',
+    },
+    {
+      title: 'Отзывы на модерации',
+      description: 'Требуют проверки и одобрения',
+      value: stats.pendingReviews,
+      href: '/admin/reviews?status=pending',
+      icon: FileText,
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
+      borderColor: 'border-red-200',
+    },
+  ]
+
+  const quickActions = [
+    {
+      title: 'Города',
+      description: 'Управление списком городов',
+      href: '/admin/cities',
+      icon: MapPin,
+      color: 'text-blue-600',
+    },
+    {
+      title: 'Категории',
+      description: 'Управление категориями услуг',
+      href: '/admin/categories',
+      icon: Tags,
+      color: 'text-green-600',
+    },
+    {
+      title: 'Автосервисы',
+      description: 'Модерация и управление',
+      href: '/admin/services',
+      icon: Wrench,
+      color: 'text-purple-600',
+    },
+    {
+      title: 'Отзывы',
+      description: 'Модерация отзывов',
+      href: '/admin/reviews',
+      icon: MessageSquare,
+      color: 'text-orange-600',
+    },
+    {
+      title: 'Пользователи',
+      description: 'Управление аккаунтами',
+      href: '/admin/users',
+      icon: Users,
+      color: 'text-pink-600',
+    },
+    {
+      title: 'Аналитика',
+      description: 'Статистика и отчеты',
+      href: '/admin/analytics',
+      icon: BarChart3,
+      color: 'text-indigo-600',
+    },
+  ]
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Админ-панель</h1>
-        <p className="text-gray-600">Обзор платформы AutoHub</p>
+        <h1 className="text-3xl font-bold tracking-tight">Панель управления</h1>
+        <p className="text-muted-foreground mt-2">
+          Обзор платформы и управление контентом
+        </p>
       </div>
 
-      {/* Main Stats */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Пользователей</p>
-                <p className="text-3xl font-bold text-blue-600">{stats.totalUsers}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Новых за месяц: {stats.newUsersThisMonth}
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {statCards.map((stat, index) => {
+          const Icon = stat.icon
+          return (
+            <Card key={index}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {stat.title}
+                </CardTitle>
+                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                  <Icon className={`h-4 w-4 ${stat.color}`} />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3" />
+                  {stat.change}
                 </p>
-              </div>
-              <div className="text-4xl">👥</div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Бизнесов</p>
-                <p className="text-3xl font-bold text-green-600">{stats.totalBusinesses}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Активных владельцев
-                </p>
-              </div>
-              <div className="text-4xl">🏢</div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Автосервисов</p>
-                <p className="text-3xl font-bold text-purple-600">{stats.totalServices}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Новых за месяц: {stats.newServicesThisMonth}
-                </p>
-              </div>
-              <div className="text-4xl">🔧</div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Отзывов</p>
-                <p className="text-3xl font-bold text-yellow-600">{stats.totalReviews}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Всего отзывов
-                </p>
-              </div>
-              <div className="text-4xl">💬</div>
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
       {/* Moderation Queue */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card className="border-yellow-300 bg-yellow-50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-yellow-900">
-                  Автосервисы на модерации
-                </h3>
-                <p className="text-sm text-yellow-700">
-                  Требуют проверки и одобрения
-                </p>
-              </div>
-              <div className="text-5xl">⏳</div>
-            </div>
-            <div className="text-4xl font-bold text-yellow-900">
-              {stats.pendingServices}
-            </div>
-            <a
-              href="/admin/services?status=pending"
-              className="inline-block mt-4 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition"
-            >
-              Перейти к модерации →
-            </a>
-          </CardContent>
-        </Card>
-
-        <Card className="border-orange-300 bg-orange-50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-orange-900">
-                  Отзывы на модерации
-                </h3>
-                <p className="text-sm text-orange-700">
-                  Требуют проверки и одобрения
-                </p>
-              </div>
-              <div className="text-5xl">📝</div>
-            </div>
-            <div className="text-4xl font-bold text-orange-900">
-              {stats.pendingReviews}
-            </div>
-            <a
-              href="/admin/reviews?status=pending"
-              className="inline-block mt-4 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
-            >
-              Перейти к модерации →
-            </a>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        {moderationCards.map((item, index) => {
+          const Icon = item.icon
+          return (
+            <Card key={index} className={`${item.borderColor} border-2`}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg">{item.title}</CardTitle>
+                    <CardDescription>{item.description}</CardDescription>
+                  </div>
+                  <div className={`p-3 rounded-lg ${item.bgColor}`}>
+                    <Icon className={`h-6 w-6 ${item.color}`} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div className={`text-4xl font-bold ${item.color}`}>
+                    {item.value}
+                  </div>
+                  <Button asChild>
+                    <Link href={item.href}>
+                      Перейти к модерации
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
-      {/* Quick Links */}
+      {/* Quick Actions */}
       <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Быстрые действия</h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            <a
-              href="/admin/services"
-              className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition"
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-3xl">🏢</div>
-                <div>
-                  <p className="font-semibold">Управление автосервисами</p>
-                  <p className="text-sm text-gray-600">
-                    Модерация, редактирование, premium
-                  </p>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/admin/reviews"
-              className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition"
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-3xl">💬</div>
-                <div>
-                  <p className="font-semibold">Управление отзывами</p>
-                  <p className="text-sm text-gray-600">
-                    Модерация отзывов пользователей
-                  </p>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/admin/users"
-              className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition"
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-3xl">👥</div>
-                <div>
-                  <p className="font-semibold">Управление пользователями</p>
-                  <p className="text-sm text-gray-600">
-                    Просмотр и управление аккаунтами
-                  </p>
-                </div>
-              </div>
-            </a>
+        <CardHeader>
+          <CardTitle>Быстрые действия</CardTitle>
+          <CardDescription>
+            Переход к основным разделам панели управления
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {quickActions.map((action, index) => {
+              const Icon = action.icon
+              return (
+                <Link
+                  key={index}
+                  href={action.href}
+                  className="flex items-start gap-4 p-4 rounded-lg border hover:bg-accent hover:border-primary transition-colors"
+                >
+                  <div className={`p-2 rounded-lg bg-accent`}>
+                    <Icon className={`h-5 w-5 ${action.color}`} />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="font-semibold leading-none">{action.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {action.description}
+                    </p>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </CardContent>
       </Card>
