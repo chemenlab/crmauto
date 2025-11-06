@@ -44,7 +44,7 @@ function ServicesContent() {
       })
 
       if (response.success && response.data) {
-        setServices(response.data.services || [])
+        setServices(response.data.items || [])
         setPagination(response.data.pagination || pagination)
       }
     } catch (error) {

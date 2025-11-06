@@ -20,12 +20,14 @@ export default function AdminLayout({
   const checkAuth = async () => {
     try {
       const response = await getCurrentUser()
-      if (response.success) {
+      if (response.success && response.data) {
         // Check if user is admin
         if (response.data.role !== 'admin') {
           router.push('/')
           return
         }
+      } else {
+        router.push('/login')
       }
     } catch (error) {
       console.error('Auth check failed:', error)

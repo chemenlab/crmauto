@@ -28,7 +28,7 @@
 - **RAM**: 4 GB
 - **Disk**: 20 GB SSD
 - **Network**: Публичный IP-адрес
-- **Domain**: Доменное имя (например, autohub.ru)
+- **Domain**: Доменное имя (например, vyborsto.ru)
 
 ### Рекомендуемые требования для production:
 - **CPU**: 4 ядра
@@ -290,7 +290,7 @@ nano .env
 # Server
 NODE_ENV=production
 PORT=5000
-API_URL=https://api.autohub.ru
+API_URL=https://api.vyborsto.ru
 
 # Database
 DATABASE_URL=postgresql://autohub_user:ваш_пароль@localhost:5432/autohub
@@ -305,7 +305,7 @@ JWT_ACCESS_EXPIRY=15m
 JWT_REFRESH_EXPIRY=30d
 
 # CORS
-CORS_ORIGIN=https://autohub.ru
+CORS_ORIGIN=https://vyborsto.ru
 
 # Rate Limiting
 RATE_LIMIT_WINDOW_MS=60000
@@ -316,7 +316,7 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASSWORD=your-app-password
-EMAIL_FROM=AutoHub <noreply@autohub.ru>
+EMAIL_FROM=AutoHub <noreply@vyborsto.ru>
 ```
 
 **Генерация секретных ключей:**
@@ -363,7 +363,7 @@ npm start
 curl -X POST http://localhost:5000/api/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@autohub.ru",
+    "email": "admin@vyborsto.ru",
     "password": "надежный_пароль",
     "firstName": "Admin",
     "lastName": "User",
@@ -379,7 +379,7 @@ curl -X POST http://localhost:5000/api/v1/auth/register \
 sudo -u postgres psql autohub
 
 # В psql:
-UPDATE users SET role = 'admin' WHERE email = 'admin@autohub.ru';
+UPDATE users SET role = 'admin' WHERE email = 'admin@vyborsto.ru';
 \q
 ```
 
@@ -401,7 +401,7 @@ nano .env.local
 ```
 
 ```env
-NEXT_PUBLIC_API_URL=https://api.autohub.ru/api/v1
+NEXT_PUBLIC_API_URL=https://api.vyborsto.ru/api/v1
 ```
 
 ### 7.3 Сборка production версии
@@ -423,7 +423,7 @@ sudo nano /etc/nginx/sites-available/autohub-api
 ```nginx
 server {
     listen 80;
-    server_name api.autohub.ru;
+    server_name api.vyborsto.ru;
 
     client_max_body_size 10M;
 
@@ -456,7 +456,7 @@ sudo nano /etc/nginx/sites-available/autohub-frontend
 ```nginx
 server {
     listen 80;
-    server_name autohub.ru www.autohub.ru;
+    server_name vyborsto.ru www.vyborsto.ru;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -593,10 +593,10 @@ sudo apt install -y certbot python3-certbot-nginx
 
 ```bash
 # Для API
-sudo certbot --nginx -d api.autohub.ru
+sudo certbot --nginx -d api.vyborsto.ru
 
 # Для Frontend
-sudo certbot --nginx -d autohub.ru -d www.autohub.ru
+sudo certbot --nginx -d vyborsto.ru -d www.vyborsto.ru
 ```
 
 ### 10.3 Автоматическое продление
@@ -615,16 +615,16 @@ sudo certbot renew --dry-run
 
 ```bash
 # Health check
-curl https://api.autohub.ru/health
+curl https://api.vyborsto.ru/health
 
 # API info
-curl https://api.autohub.ru/api/v1
+curl https://api.vyborsto.ru/api/v1
 ```
 
 ### 11.2 Проверка Frontend
 
 Открыть в браузере:
-- https://autohub.ru
+- https://vyborsto.ru
 
 ### 11.3 Проверка баз данных
 
@@ -757,5 +757,5 @@ AutoHub успешно развернут на вашем Ubuntu сервере!
 - [Документация Express.js](https://expressjs.com/)
 
 **Поддержка:**
-- Email: support@autohub.ru
+- Email: support@vyborsto.ru
 - GitHub Issues: https://github.com/your-username/crmauto/issues

@@ -20,12 +20,14 @@ export default function DashboardLayout({
   const checkAuth = async () => {
     try {
       const response = await getCurrentUser()
-      if (response.success) {
+      if (response.success && response.data) {
         // Check if user is business owner
         if (response.data.role !== 'business') {
           router.push('/')
           return
         }
+      } else {
+        router.push('/login')
       }
     } catch (error) {
       console.error('Auth check failed:', error)
